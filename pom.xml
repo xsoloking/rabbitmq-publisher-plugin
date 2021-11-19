@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>rabbitmq-publisher</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.5-int</version>
     <packaging>hpi</packaging>
 
     <name>Rabbit-MQ Publisher Plugin</name>
@@ -47,7 +47,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <jenkins.version>2.204.2</jenkins.version>
+        <jenkins.version>2.263.4</jenkins.version>
         <jenkins-test-harness.version>2.34</jenkins-test-harness.version>
 
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
@@ -56,7 +56,7 @@
         <spring.version>5.2.3.RELEASE</spring.version>
         <spring-rabbit.version>2.2.3.RELEASE</spring-rabbit.version>
 
-        <slf4jVersion>1.7.26</slf4jVersion>
+        <slf4jVersion>1.7.30</slf4jVersion>
     </properties>
 
     <dependencyManagement>
@@ -84,7 +84,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
@@ -111,7 +110,11 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -119,6 +122,11 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.5</version>
         </dependency>
     </dependencies>
 

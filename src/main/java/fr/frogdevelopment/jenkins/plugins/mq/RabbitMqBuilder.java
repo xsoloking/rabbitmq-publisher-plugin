@@ -1,7 +1,5 @@
 package fr.frogdevelopment.jenkins.plugins.mq;
 
-import static org.springframework.amqp.core.MessageBuilder.withBody;
-
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -9,30 +7,12 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractDescribableImpl;
-import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
-import hudson.model.Cause;
-import hudson.model.Descriptor;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.Secret;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
-import javax.annotation.Nonnull;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONArray;
@@ -50,6 +30,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
+import java.util.*;
+import java.util.concurrent.TimeoutException;
+
+import static org.springframework.amqp.core.MessageBuilder.withBody;
 
 // cf example https://github.com/jenkinsci/hello-world-plugin
 @SuppressFBWarnings({"WeakerAccess", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"})
@@ -259,7 +249,7 @@ public class RabbitMqBuilder extends Builder implements SimpleBuildStep {
             this.configs = configs;
         }
 
-        private RabbitConfig getRabbitConfig(String configName) {
+        public RabbitConfig getRabbitConfig(String configName) {
             return configs.getRabbitConfigs()
                     .stream()
                     .filter(rc -> rc.getName().equals(configName))
@@ -353,10 +343,15 @@ public class RabbitMqBuilder extends Builder implements SimpleBuildStep {
         private String username;
         private String password;
         private String virtualHost;
+        private boolean enableQueueListener;
+        private boolean enableRunListener;
+        private String exchange;
+        private String routingKey;
 
         @DataBoundConstructor
         public RabbitConfig(String name, String host, int port, String username, String password, boolean isSecure,
-                            String virtualHost) {
+                            String virtualHost, boolean enableQueueListener, boolean enableRunListener,
+                            String exchange, String routingKey) {
             this.name = name;
             this.host = host;
             this.port = port;
@@ -364,6 +359,10 @@ public class RabbitMqBuilder extends Builder implements SimpleBuildStep {
             this.username = username;
             this.password = password;
             this.virtualHost = virtualHost;
+            this.enableQueueListener = enableQueueListener;
+            this.enableRunListener = enableRunListener;
+            this.exchange = exchange;
+            this.routingKey = routingKey;
         }
 
         public String getName() {
@@ -388,6 +387,22 @@ public class RabbitMqBuilder extends Builder implements SimpleBuildStep {
 
         public String getVirtualHost() {
             return virtualHost;
+        }
+
+        public String getExchange() {
+            return exchange;
+        }
+
+        public String getRoutingKey() {
+            return routingKey;
+        }
+
+        public boolean getEnableQueueListener() {
+            return enableQueueListener;
+        }
+
+        public boolean getEnableRunListener() {
+            return enableRunListener;
         }
 
         public static String getDecodedPassword(String password) {
@@ -416,10 +431,14 @@ public class RabbitMqBuilder extends Builder implements SimpleBuildStep {
             String password = jsonObject.getString("password");
             boolean isSecure = jsonObject.getBoolean("isSecure");
             String virtualHost = jsonObject.getString("virtualHost");
-
+            String exchange = jsonObject.getString("exchange");
+            boolean enableQueueListener = jsonObject.getBoolean("enableQueueListener");
+            boolean enableRunListener = jsonObject.getBoolean("enableRunListener");
+            String routingKey = jsonObject.getString("routingKey");
             Secret secret = Secret.fromString(password);
 
-            return new RabbitConfig(name, host, port, username, secret.getEncryptedValue(), isSecure, virtualHost);
+            return new RabbitConfig(name, host, port, username, secret.getEncryptedValue(), isSecure, virtualHost,
+                    enableQueueListener, enableRunListener, exchange, routingKey);
         }
 
         @Override

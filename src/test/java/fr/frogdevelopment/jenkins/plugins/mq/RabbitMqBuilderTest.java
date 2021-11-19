@@ -31,7 +31,7 @@ import static fr.frogdevelopment.jenkins.plugins.mq.RabbitMqBuilder.RabbitConfig
 // https://wiki.jenkins.io/display/JENKINS/Unit+Test
 public class RabbitMqBuilderTest {
 
-    private static final RabbitConfig RABBIT_CONFIG = new RabbitConfig("rabbit-test", "roger-rabbit", 5672, "guest", "guest", false, "/");
+    private static final RabbitConfig RABBIT_CONFIG = new RabbitConfig("rabbit-test", "roger-rabbit", 5672, "guest", "guest", false, "/", false, false,"", "");
 
     @Rule
     public JenkinsRule jenkinsRule = new JenkinsRule();
