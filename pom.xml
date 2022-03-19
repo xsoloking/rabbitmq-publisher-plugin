@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>rabbitmq-publisher</artifactId>
-    <version>1.4.5-int</version>
+    <version>1.4.6-int</version>
     <packaging>hpi</packaging>
 
     <name>Rabbit-MQ Publisher Plugin</name>

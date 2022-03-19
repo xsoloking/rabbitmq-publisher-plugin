@@ -45,7 +45,7 @@ public class RabbitMQRunListener extends RunListener<Run<?, ?>> {
             msg.put("url", Jenkins.get().getRootUrl() + r.getUrl());
             msg.put("status", "FAILURE");
             msg.put("taskJobBuildId", r.getId());
-            msg.put("failureCause", getBuildFailureCauses(r));
+            msg.put("failureCause", "");
             for (ParametersAction pa : r.getActions(ParametersAction.class)) {
                 for (ParameterValue p : pa.getParameters()) {
                     if (p.getName().endsWith("Id")) {
