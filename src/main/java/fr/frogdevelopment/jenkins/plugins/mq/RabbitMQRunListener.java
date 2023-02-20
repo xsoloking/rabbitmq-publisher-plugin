@@ -73,6 +73,7 @@ public class RabbitMQRunListener extends RunListener<Run<?, ?>> {
                         rabbitConfig.getExchange(),
                         rabbitConfig.getRoutingKey(),
                         withBody(msg.getBytes(StandardCharsets.UTF_8)).build());
+                factory.destroy();
             }
         } catch (GeneralSecurityException e) {
             e.printStackTrace();

@@ -36,6 +36,7 @@ public class RabbitMqQueueListener extends QueueListener {
                         rabbitConfig.getExchange(),
                         rabbitConfig.getRoutingKey(),
                         withBody(getMessage(wi).getBytes(StandardCharsets.UTF_8)).build());
+                factory.destroy();
             }
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
